@@ -1,13 +1,5 @@
 import streamlit as st
 from PIL import Image
-import numpy as np
-
-# Set page configuration
-st.set_page_config(
-    page_title="BMI Calculator",
-    page_icon="🧍‍♂️",
-    layout="wide",
-)
 
 # Function to calculate BMI
 def calculate_bmi(height, weight):
@@ -26,34 +18,13 @@ def interpret_bmi(bmi):
     else:
         return "Obese!", "Your health is at risk. You should visit a doctor."
 
-# Function to resize image dynamically
-def resize_image(img, height):
-    img_np = np.array(img)
-    resized_img = Image.fromarray(img_np)
-    aspect_ratio = img.width / img.height
-    new_width = int(height * aspect_ratio)
-    resized_img = resized_img.resize((new_width, height))
-    return resized_img
-
 # Streamlit App
 def main():
     st.title("BMI Calculator")
 
-    # Sidebar with image
-    st.sidebar.image("icon.png", width=100)
-
-    # Load original image
-    man_img = Image.open("man.png")
-
     # User input for height and weight
-    height = st.sidebar.slider("Height (cm)", 0, 220, 170, 1)
-    weight = st.sidebar.slider("Weight (kg)", 0, 200, 70, 1)
-
-    # Resize image dynamically based on height
-    resized_man_img = resize_image(man_img, height)
-
-    # Display resized image
-    st.sidebar.image(resized_man_img, caption="Resized Image", use_column_width=True)
+    height = st.slider("Height (cm)", 0, 220, 170, 1)
+    weight = st.slider("Weight (kg)", 0, 200, 70, 1)
 
     # Calculate BMI and interpret result
     bmi_result = calculate_bmi(height, weight)
@@ -64,6 +35,16 @@ def main():
     st.info(f"Your BMI: {bmi_result}")
     st.success(f"Interpretation: {interpretation}")
     st.text(advice)
+
+    # Show image with styling
+    image_path = "man.png"
+    img = Image.open(image_path)
+    aspect_ratio = img.width / img.height
+    new_width = int(height * aspect_ratio)
+    resized_img = img.resize((new_width, height))
+
+    # Additional styling for the resized image
+    st.image(resized_img, caption="Resized Image", use_column_width=True, output_format="PNG", channels="RGBA")
 
 if __name__ == "__main__":
     main()
